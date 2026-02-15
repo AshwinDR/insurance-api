@@ -1,9 +1,9 @@
+from fastapi import FastAPI
+from pydantic import BaseModel
 import pickle
 import numpy as np
 import pandas as pd
-
-from fastapi import FastAPI
-from pydantic import BaseModel
+import os
 
 
 app = FastAPI(
@@ -14,9 +14,11 @@ app = FastAPI(
 )
 
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "insurance_model.pkl")
 
-# Load trained model
-with open("insurance_model.pkl", "rb") as f:
+
+with open(MODEL_PATH, "rb") as f:
     model = pickle.load(f)
 
 
@@ -53,6 +55,4 @@ def predict(data: InsuranceInput):
 
     prediction = model.predict(input_df)
 
-    return {
-        "predicted_charges": float(prediction[0])
-    }
+    return {"predicted_charges": float(prediction[0])}
