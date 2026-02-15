@@ -6,7 +6,13 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 
-app = FastAPI(title="Insurance Prediction API")
+app = FastAPI(
+    title="Insurance Prediction API",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json"
+)
+
 
 
 # Load trained model
