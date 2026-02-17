@@ -1,27 +1,25 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+
 import pickle
 import numpy as np
 import pandas as pd
-import os
 
 
+# Create app
 app = FastAPI(
     title="Insurance Prediction API",
-    docs_url="/docs",
-    redoc_url="/redoc",
-    openapi_url="/openapi.json"
+    description="Predict insurance charges using ML",
+    version="1.0"
 )
 
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "insurance_model.pkl")
+# Load trained model
+with open("insurance_model.pkl", "rb") as file:
+    model = pickle.load(file)
 
 
-with open(MODEL_PATH, "rb") as f:
-    model = pickle.load(f)
-
-
+# Input schema
 class InsuranceInput(BaseModel):
     age: int
     sex: int
@@ -31,11 +29,13 @@ class InsuranceInput(BaseModel):
     region: int
 
 
+# Home route
 @app.get("/")
 def home():
     return {"message": "Insurance API is running"}
 
 
+# Prediction route
 @app.post("/predict")
 def predict(data: InsuranceInput):
 
@@ -55,4 +55,6 @@ def predict(data: InsuranceInput):
 
     prediction = model.predict(input_df)
 
-    return {"predicted_charges": float(prediction[0])}
+    return {
+        "predicted_charges": float(prediction[0])
+    }

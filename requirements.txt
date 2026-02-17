@@ -1,6 +1,8 @@
 fastapi
 uvicorn
-numpy
 pandas
+numpy
 scikit-learn
 pydantic
+pytest
+httpx
